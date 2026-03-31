@@ -10,9 +10,9 @@ export default function ProfileArea() {
         <UserCircle2 className="h-4.5 w-4.5" />
       </div>
       <div className="leading-tight">
-        <p className="text-xs font-medium text-slate-900 dark:text-slate-100">{user?.name || "Student User"}</p>
+        <p className="text-xs font-medium text-slate-900 dark:text-slate-100">{user?.name || "User"}</p>
         <span className="inline-flex items-center rounded-full bg-blue-100 px-1.5 py-0.5 text-[10px] font-semibold text-blue-700 dark:bg-blue-500/25 dark:text-blue-200">
-          {role || "STUDENT"}
+          {role || "USER"}
         </span>
       </div>
       <ChevronDown className="h-3.5 w-3.5 text-slate-500 dark:text-slate-400" />

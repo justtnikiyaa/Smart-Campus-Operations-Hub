@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 
 export const navByRole = {
-  STUDENT: [
+  USER: [
     { label: "Dashboard", to: "/dashboard", icon: LayoutDashboard },
     { label: "Notifications", to: "/notifications", icon: Bell },
     { label: "Profile", to: "/dashboard", icon: UserCircle }

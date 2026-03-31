@@ -3,7 +3,7 @@ import { createContext, useMemo, useState } from "react";
 export const AuthContext = createContext(null);
 
 const users = {
-  STUDENT: { name: "Student User", email: "student@campus.edu", role: "STUDENT" },
+  USER: { name: "User", email: "user@campus.edu", role: "USER" },
   ADMIN: { name: "Admin User", email: "admin@campus.edu", role: "ADMIN" }
 };
 

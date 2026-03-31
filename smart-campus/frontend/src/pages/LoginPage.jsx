@@ -57,7 +57,7 @@ export default function LoginPage() {
 
             <button
               type="button"
-              onClick={() => loginAndGo("STUDENT")}
+              onClick={() => loginAndGo("USER")}
               className="group flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
             >
               <svg viewBox="0 0 48 48" className="h-5 w-5" aria-hidden="true">
@@ -70,7 +70,7 @@ export default function LoginPage() {
             </button>
 
             <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-              <Button variant="secondary" onClick={() => loginAndGo("STUDENT")}>Demo Student</Button>
+              <Button variant="secondary" onClick={() => loginAndGo("USER")}>Demo User</Button>
               <Button variant="outline" onClick={() => loginAndGo("ADMIN")}>Demo Admin</Button>
             </div>
 
