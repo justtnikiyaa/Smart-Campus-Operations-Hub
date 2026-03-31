@@ -1,4 +1,105 @@
 package com.smartcampus.notification.service;
 
+import com.smartcampus.common.exception.ResourceNotFoundException;
+import com.smartcampus.notification.dto.CreateNotificationRequest;
+import com.smartcampus.notification.dto.NotificationResponse;
+import com.smartcampus.notification.dto.UnreadCountResponse;
+import com.smartcampus.notification.entity.Notification;
+import com.smartcampus.notification.repository.NotificationRepository;
+import com.smartcampus.user.entity.User;
+import com.smartcampus.user.repository.UserRepository;
+import com.smartcampus.user.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
 public class NotificationService {
+
+    private final NotificationRepository notificationRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
+
+    public List<NotificationResponse> getMyNotifications(String email) {
+        User user = userService.getByEmailOrThrow(email);
+        return notificationRepository.findByRecipientIdOrderByCreatedAtDesc(user.getId())
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    public UnreadCountResponse getMyUnreadCount(String email) {
+        User user = userService.getByEmailOrThrow(email);
+        long count = notificationRepository.countByRecipientIdAndIsReadFalse(user.getId());
+        return new UnreadCountResponse(count);
+    }
+
+    @Transactional
+    public NotificationResponse markAsRead(Long notificationId, String email) {
+        User user = userService.getByEmailOrThrow(email);
+        Notification notification = notificationRepository.findByIdAndRecipientId(notificationId, user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Notification not found."));
+
+        notification.setRead(true);
+        notification.setReadAt(LocalDateTime.now());
+        return toResponse(notificationRepository.save(notification));
+    }
+
+    @Transactional
+    public void markAllAsRead(String email) {
+        User user = userService.getByEmailOrThrow(email);
+        List<Notification> notifications = notificationRepository.findByRecipientIdOrderByCreatedAtDesc(user.getId());
+
+        for (Notification notification : notifications) {
+            if (!notification.isRead()) {
+                notification.setRead(true);
+                notification.setReadAt(LocalDateTime.now());
+            }
+        }
+        notificationRepository.saveAll(notifications);
+    }
+
+    @Transactional
+    public NotificationResponse createNotification(CreateNotificationRequest request, String adminEmail) {
+        User recipient = userRepository.findById(request.recipientUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("Recipient user not found."));
+
+        User createdBy = userService.getByEmailOrThrow(adminEmail);
+
+        Notification notification = new Notification();
+        notification.setTitle(request.title());
+        notification.setMessage(request.message());
+        notification.setType(request.type());
+        notification.setRecipient(recipient);
+        notification.setCreatedBy(createdBy);
+
+        return toResponse(notificationRepository.save(notification));
+    }
+
+    public List<NotificationResponse> getAllNotifications() {
+        return notificationRepository.findAll().stream().map(this::toResponse).toList();
+    }
+
+    public NotificationResponse getNotificationById(Long id) {
+        Notification notification = notificationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Notification not found."));
+        return toResponse(notification);
+    }
+
+    private NotificationResponse toResponse(Notification notification) {
+        return new NotificationResponse(
+                notification.getId(),
+                notification.getTitle(),
+                notification.getMessage(),
+                notification.getType(),
+                !notification.isRead(),
+                notification.getCreatedAt(),
+                notification.getReadAt(),
+                notification.getRecipient().getId()
+        );
+    }
 }
