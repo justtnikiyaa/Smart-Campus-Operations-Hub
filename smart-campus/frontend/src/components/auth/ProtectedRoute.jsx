@@ -6,7 +6,13 @@ export default function ProtectedRoute({ children, allowRoles }) {
   const location = useLocation();
 
   if (isAuthLoading) {
-    return <div style={{ padding: "16px" }}>Checking login...</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center px-4">
+        <div className="rounded-2xl border border-slate-200 bg-white/90 px-5 py-3 text-sm font-medium text-slate-600 shadow-sm dark:border-cyan-300/20 dark:bg-[#10192d]/90 dark:text-slate-300">
+          Checking login...
+        </div>
+      </div>
+    );
   }
 
   if (!isAuthenticated) {

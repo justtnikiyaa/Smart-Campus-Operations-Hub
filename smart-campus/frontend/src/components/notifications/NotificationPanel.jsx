@@ -55,11 +55,11 @@ function LoadingState() {
 
 function EmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center dark:border-cyan-300/25 dark:bg-white/[0.03]">
+    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-9 text-center dark:border-cyan-300/25 dark:bg-white/[0.03]">
       <div className="mb-2 rounded-full bg-slate-200 p-2 dark:bg-slate-800/70">
         <Inbox className="h-5 w-5 text-slate-500 dark:text-slate-300" />
       </div>
-      <p className="text-sm font-medium text-slate-800 dark:text-slate-100">All caught up</p>
+      <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">All caught up</p>
       <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">No notifications right now.</p>
     </div>
   );
@@ -78,9 +78,9 @@ export default function NotificationPanel({
   if (!open) return null;
 
   return (
-    <div className="fixed left-3 right-3 top-16 z-50 rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl dark:border-cyan-300/25 dark:bg-[#0e162b] dark:shadow-[0_0_28px_rgba(56,189,248,0.2)] md:absolute md:left-auto md:right-0 md:top-10 md:w-[390px]">
-      <div className="mb-2 flex items-center justify-between">
-        <div className="flex items-center gap-2">
+    <div className="fixed left-3 right-3 top-[72px] z-50 rounded-2xl border border-slate-200 bg-white/95 p-3.5 shadow-2xl backdrop-blur-xl dark:border-cyan-300/25 dark:bg-[#0e162b]/95 dark:shadow-[0_0_28px_rgba(56,189,248,0.2)] md:absolute md:left-auto md:right-0 md:top-11 md:w-[400px]">
+      <div className="mb-2 flex items-center justify-between gap-3 border-b border-slate-200/70 pb-2 dark:border-cyan-300/15">
+        <div className="flex min-w-0 items-center gap-2">
           <Bell className="h-4 w-4 text-blue-600 dark:text-cyan-300" />
           <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Notifications</h3>
           <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-semibold text-blue-700 dark:bg-blue-500/25 dark:text-blue-200">
@@ -119,7 +119,7 @@ export default function NotificationPanel({
                 className={cn(
                   "rounded-xl border p-3 transition",
                   item.unread
-                    ? "border-blue-300 bg-blue-50/70 dark:border-cyan-300/35 dark:bg-cyan-400/10"
+                    ? "border-blue-300/80 bg-blue-50/75 dark:border-cyan-300/35 dark:bg-cyan-400/10"
                     : "border-slate-200 bg-slate-50 dark:border-cyan-300/20 dark:bg-white/[0.03]"
                 )}
               >
@@ -131,17 +131,12 @@ export default function NotificationPanel({
                   <span className="text-[10px] text-slate-500 dark:text-slate-400">{item.time}</span>
                 </div>
 
-                <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{item.title}</p>
-                <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-300">{item.message}</p>
+                <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{item.title}</p>
+                <p className="mt-0.5 text-xs leading-relaxed text-slate-600 dark:text-slate-300">{item.message}</p>
 
-                <div className="mt-2 flex items-center justify-end gap-1.5">
+                <div className="mt-2.5 flex items-center justify-end gap-1.5">
                   {item.unread && (
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      className="h-7 px-2.5 text-[11px]"
-                      onClick={() => onMarkRead(item.id)}
-                    >
+                    <Button size="sm" variant="secondary" className="h-7 px-2.5 text-[11px]" onClick={() => onMarkRead(item.id)}>
                       Mark read
                     </Button>
                   )}
@@ -161,14 +156,14 @@ export default function NotificationPanel({
       </div>
 
       {!loading && notifications.length > 0 && unreadCount === 0 && (
-        <div className="mt-2 flex items-center justify-center gap-1.5 rounded-lg bg-emerald-50 py-1.5 text-[11px] text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
+        <div className="mt-2.5 flex items-center justify-center gap-1.5 rounded-lg bg-emerald-50 py-1.5 text-[11px] font-medium text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
           <CircleCheckBig className="h-3.5 w-3.5" />
           All notifications are read
         </div>
       )}
 
       {!loading && notifications.length === 0 && (
-        <div className="mt-2 flex items-center justify-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+        <div className="mt-2.5 flex items-center justify-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
           <CircleX className="h-3.5 w-3.5" />
           No notifications to manage
         </div>

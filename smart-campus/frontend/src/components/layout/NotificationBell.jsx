@@ -54,9 +54,9 @@ export default function NotificationBell() {
         onClick={toggleOpen}
         className="relative h-8 w-8 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10"
       >
-        <Bell className="h-4 w-4" />
+        <Bell className="h-3.5 w-3.5" />
         {unreadCount > 0 && (
-          <span className="absolute -right-1 -top-1 rounded-full bg-blue-500 px-1 py-0.5 text-[9px] font-semibold text-white">
+          <span className="absolute -right-1 -top-1 inline-flex min-w-4 items-center justify-center rounded-full bg-blue-500 px-1 py-0.5 text-[10px] font-semibold text-white shadow-sm">
             {unreadCount}
           </span>
         )}
@@ -75,3 +75,4 @@ export default function NotificationBell() {
     </div>
   );
 }
+

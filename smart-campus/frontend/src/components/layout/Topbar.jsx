@@ -11,49 +11,60 @@ export default function Topbar({ onMenuClick, title }) {
   const { isDark, toggleTheme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur dark:border-cyan-400/20 dark:bg-[#0d1529]/95">
-      <div className="flex h-14 items-center px-3 md:px-4">
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="text-slate-700 hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-white/10 md:hidden" onClick={onMenuClick}>
+    <header className="sticky top-0 z-30 border-b border-slate-200/85 bg-white/85 backdrop-blur-xl dark:border-cyan-400/15 dark:bg-[#0b1326]/85">
+      <div className="mx-auto flex h-[58px] w-full max-w-[1120px] items-center gap-2.5 px-3 md:gap-3 md:px-5">
+        <div className="flex min-w-0 items-center gap-1.5 md:gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-slate-700 hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-white/10 md:hidden"
+            onClick={onMenuClick}
+          >
             <Menu className="h-4 w-4" />
           </Button>
-          <h1 className="font-display text-lg font-semibold text-slate-900 md:text-2xl dark:text-slate-100">{title}</h1>
+
+          <h1 className="truncate font-display text-[1.3rem] font-semibold tracking-tight text-slate-900 dark:text-slate-100 md:text-[1.55rem]">
+            {title}
+          </h1>
         </div>
 
-        <div className="ml-auto flex items-center gap-3 md:gap-4">
-          <div className="relative hidden w-full max-w-[250px] lg:block">
+        <div className="ml-auto flex items-center gap-1.5 md:gap-2">
+          <div className="relative hidden w-full min-w-[250px] max-w-[320px] xl:block">
             <Search className="pointer-events-none absolute left-3 top-2.5 h-3.5 w-3.5 text-slate-400" />
             <Input
-              className="h-9 rounded-full border-slate-300 bg-slate-50 pl-9 text-xs text-slate-900 placeholder:text-slate-400 focus-visible:ring-blue-400 dark:border-cyan-300/20 dark:bg-[#0f1a31] dark:text-slate-100"
+              className="h-8 rounded-full border-slate-300/80 bg-slate-50/85 pl-9 text-xs shadow-none placeholder:text-slate-400 dark:border-cyan-300/20 dark:bg-[#111c33]"
               placeholder="Search"
             />
           </div>
 
-          <div className="flex items-center gap-1.5 md:gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className="h-8 w-8 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10"
-              title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-            >
-              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            className="h-8 w-8 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10"
+            title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {isDark ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
+          </Button>
 
-            <NotificationBell />
-          </div>
+          <NotificationBell />
 
-          <div className="pl-1 md:pl-2">
+          <div className="hidden md:block">
             <ProfileArea />
           </div>
 
-          <div className="pl-1">
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10" onClick={logout}>
-              <LogOut className="h-3.5 w-3.5" />
-            </Button>
-          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10"
+            onClick={logout}
+            title="Log out"
+          >
+            <LogOut className="h-3.5 w-3.5" />
+          </Button>
         </div>
       </div>
     </header>
   );
 }
+
