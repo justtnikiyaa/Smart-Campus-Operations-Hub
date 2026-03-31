@@ -1,25 +1,33 @@
 export const notifications = [
   {
-    id: "1",
-    title: "Class schedule changed",
-    message: "Database lecture moved to 1:30 PM.",
-    type: "Academic",
+    id: "n1",
+    title: "Booking approved",
+    message: "Your lab room booking for tomorrow has been approved.",
+    type: "BOOKING_APPROVED",
     time: "5m ago",
     unread: true
   },
   {
-    id: "2",
-    title: "Fee deadline reminder",
-    message: "Semester payment due in 3 days.",
-    type: "Finance",
-    time: "1h ago",
+    id: "n2",
+    title: "Booking rejected",
+    message: "Your booking request was rejected due to schedule conflict.",
+    type: "BOOKING_REJECTED",
+    time: "20m ago",
     unread: true
   },
   {
-    id: "3",
-    title: "Network maintenance",
-    message: "Campus Wi-Fi downtime from 11 PM to 1 AM.",
-    type: "System",
+    id: "n3",
+    title: "Ticket status changed",
+    message: "Support ticket #248 is now marked as In Progress.",
+    type: "TICKET_STATUS_CHANGED",
+    time: "1h ago",
+    unread: false
+  },
+  {
+    id: "n4",
+    title: "New comment",
+    message: "Admin added a comment on your maintenance request.",
+    type: "NEW_COMMENT",
     time: "Yesterday",
     unread: false
   }
