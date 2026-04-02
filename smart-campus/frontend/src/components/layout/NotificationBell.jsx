@@ -1,36 +1,93 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Bell } from "lucide-react";
-import { notifications as seedNotifications } from "../../data/notifications";
 import { Button } from "../ui/button";
 import NotificationPanel from "../notifications/NotificationPanel";
+import notificationService from "../../services/notificationService";
 
 export default function NotificationBell() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [items, setItems] = useState(seedNotifications);
+  const [items, setItems] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [error, setError] = useState("");
   const containerRef = useRef(null);
 
-  const unreadCount = useMemo(() => items.filter((n) => n.unread).length, [items]);
-
-  const toggleOpen = () => {
-    if (!open) {
-      setLoading(true);
-      setTimeout(() => setLoading(false), 500);
+  const refreshUnreadCount = async () => {
+    try {
+      const count = await notificationService.getUnreadCount();
+      setUnreadCount(count);
+    } catch {
+      // Keep old badge count if request fails.
     }
-    setOpen((prev) => !prev);
   };
 
-  const onMarkRead = (id) => {
+  const loadNotifications = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const data = await notificationService.getMyNotifications();
+      setItems(data);
+      setUnreadCount(data.filter((item) => item.unread).length);
+      // Keep backend count as source of truth.
+      await refreshUnreadCount();
+    } catch (err) {
+      setError(err.message || "Failed to load notifications.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleOpen = async () => {
+    if (!open) {
+      setOpen(true);
+      await loadNotifications();
+      return;
+    }
+    setOpen(false);
+  };
+
+  const onMarkRead = async (id) => {
+    const target = items.find((item) => item.id === id);
+    if (!target || !target.unread) return;
+
     setItems((prev) => prev.map((item) => (item.id === id ? { ...item, unread: false } : item)));
+    setUnreadCount((prev) => Math.max(prev - 1, 0));
+
+    try {
+      await notificationService.markRead(id);
+    } catch (err) {
+      setError(err.message || "Failed to mark as read.");
+      await loadNotifications();
+    }
   };
 
   const onDelete = (id) => {
+    const target = items.find((item) => item.id === id);
     setItems((prev) => prev.filter((item) => item.id !== id));
+
+    if (target?.unread) {
+      setUnreadCount((prev) => Math.max(prev - 1, 0));
+    }
   };
 
-  const onMarkAllRead = () => {
+  const onMarkAllRead = async () => {
+    const hadUnread = items.some((item) => item.unread);
+    if (!hadUnread) return;
+
     setItems((prev) => prev.map((item) => ({ ...item, unread: false })));
+    setUnreadCount(0);
+
+    try {
+      await notificationService.markAllRead();
+    } catch (err) {
+      setError(err.message || "Failed to mark all as read.");
+      await loadNotifications();
+    }
   };
+
+  useEffect(() => {
+    refreshUnreadCount();
+  }, []);
 
   useEffect(() => {
     function onDocClick(event) {
@@ -65,9 +122,11 @@ export default function NotificationBell() {
       <NotificationPanel
         open={open}
         loading={loading}
+        error={error}
         notifications={items}
         unreadCount={unreadCount}
         onClose={() => setOpen(false)}
+        onRetry={loadNotifications}
         onMarkAllRead={onMarkAllRead}
         onMarkRead={onMarkRead}
         onDelete={onDelete}
@@ -75,4 +134,3 @@ export default function NotificationBell() {
     </div>
   );
 }
-

@@ -8,7 +8,8 @@ import {
   Loader2,
   MessageSquare,
   Ticket,
-  Trash2
+  Trash2,
+  TriangleAlert
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { cn } from "../../lib/utils";
@@ -65,12 +66,33 @@ function EmptyState() {
   );
 }
 
+function ErrorState({ message, onRetry }) {
+  return (
+    <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 dark:border-rose-400/35 dark:bg-rose-400/10">
+      <div className="flex items-start gap-2">
+        <TriangleAlert className="mt-0.5 h-4 w-4 text-rose-600 dark:text-rose-300" />
+        <div className="min-w-0">
+          <p className="text-xs font-semibold text-rose-700 dark:text-rose-200">Could not load notifications</p>
+          <p className="mt-0.5 text-xs text-rose-700/90 dark:text-rose-200/90">{message}</p>
+        </div>
+      </div>
+      <div className="mt-2 flex justify-end">
+        <Button size="sm" variant="ghost" className="h-7 text-[11px]" onClick={onRetry}>
+          Retry
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 export default function NotificationPanel({
   open,
   loading,
+  error,
   notifications,
   unreadCount,
   onClose,
+  onRetry,
   onMarkAllRead,
   onMarkRead,
   onDelete
@@ -93,7 +115,7 @@ export default function NotificationPanel({
       </div>
 
       <div className="mb-2 flex justify-end">
-        <Button size="sm" variant="ghost" className="h-7 text-[11px]" onClick={onMarkAllRead}>
+        <Button size="sm" variant="ghost" className="h-7 text-[11px]" onClick={onMarkAllRead} disabled={loading || notifications.length === 0}>
           <CircleCheckBig className="mr-1 h-3.5 w-3.5" />
           Mark all read
         </Button>
@@ -102,9 +124,12 @@ export default function NotificationPanel({
       <div className="max-h-80 space-y-2 overflow-auto pr-1">
         {loading && <LoadingState />}
 
-        {!loading && notifications.length === 0 && <EmptyState />}
+        {!loading && error && <ErrorState message={error} onRetry={onRetry} />}
+
+        {!loading && !error && notifications.length === 0 && <EmptyState />}
 
         {!loading &&
+          !error &&
           notifications.map((item) => {
             const meta = typeMeta[item.type] || {
               label: "Notification",
@@ -155,14 +180,14 @@ export default function NotificationPanel({
           })}
       </div>
 
-      {!loading && notifications.length > 0 && unreadCount === 0 && (
+      {!loading && !error && notifications.length > 0 && unreadCount === 0 && (
         <div className="mt-2.5 flex items-center justify-center gap-1.5 rounded-lg bg-emerald-50 py-1.5 text-[11px] font-medium text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
           <CircleCheckBig className="h-3.5 w-3.5" />
           All notifications are read
         </div>
       )}
 
-      {!loading && notifications.length === 0 && (
+      {!loading && !error && notifications.length === 0 && (
         <div className="mt-2.5 flex items-center justify-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
           <CircleX className="h-3.5 w-3.5" />
           No notifications to manage
