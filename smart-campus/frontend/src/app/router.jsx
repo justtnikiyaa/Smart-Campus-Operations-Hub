@@ -5,7 +5,7 @@ import AdminPage from "../pages/AdminPage";
 import NotificationsPage from "../pages/NotificationsPage";
 import UnauthorizedPage from "../pages/UnauthorizedPage";
 import OAuthSuccessPage from "../pages/OAuthSuccessPage";
-import ProtectedRoute from "../components/auth/ProtectedRoute";
+import RoleProtectedRoute from "../components/auth/RoleProtectedRoute";
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -14,25 +14,33 @@ export const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: (
-      <ProtectedRoute>
+      <RoleProtectedRoute allowRoles={["USER"]}>
         <DashboardPage />
-      </ProtectedRoute>
+      </RoleProtectedRoute>
     )
   },
   {
     path: "/notifications",
     element: (
-      <ProtectedRoute>
+      <RoleProtectedRoute allowRoles={["USER"]}>
         <NotificationsPage />
-      </ProtectedRoute>
+      </RoleProtectedRoute>
     )
   },
   {
     path: "/admin",
     element: (
-      <ProtectedRoute allowRoles={["ADMIN"]}>
+      <RoleProtectedRoute allowRoles={["ADMIN"]}>
         <AdminPage />
-      </ProtectedRoute>
+      </RoleProtectedRoute>
+    )
+  },
+  {
+    path: "/admin/notifications",
+    element: (
+      <RoleProtectedRoute allowRoles={["ADMIN"]}>
+        <NotificationsPage />
+      </RoleProtectedRoute>
     )
   },
   { path: "*", element: <Navigate to="/dashboard" replace /> }

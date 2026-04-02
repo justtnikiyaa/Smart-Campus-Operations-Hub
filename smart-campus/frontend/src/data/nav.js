@@ -13,9 +13,9 @@ export const navByRole = {
     { label: "Profile", to: "/dashboard", icon: UserCircle }
   ],
   ADMIN: [
-    { label: "Dashboard", to: "/dashboard", icon: LayoutDashboard },
+    { label: "Dashboard", to: "/admin", icon: LayoutDashboard },
     { label: "Admin", to: "/admin", icon: ShieldCheck },
-    { label: "Notifications", to: "/notifications", icon: Bell },
+    { label: "Notifications", to: "/admin/notifications", icon: Bell },
     { label: "Settings", to: "/admin", icon: Settings }
   ]
 };
