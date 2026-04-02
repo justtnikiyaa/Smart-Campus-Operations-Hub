@@ -16,4 +16,8 @@ public class AuthService {
         User user = userService.getByEmailOrThrow(email);
         return userService.toAuthMeResponse(user);
     }
+
+    public AuthMeResponse toAuthMeResponse(User user) {
+        return userService.toAuthMeResponse(user);
+    }
 }
