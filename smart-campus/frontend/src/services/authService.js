@@ -1,8 +1,9 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+const GOOGLE_OAUTH_LOGIN_URL = "http://localhost:8080/oauth2/authorization/google";
 
 const authService = {
   loginWithGoogle: () => {
-    window.location.href = `${API_BASE_URL}/oauth2/authorization/google`;
+    window.location.href = GOOGLE_OAUTH_LOGIN_URL;
   },
 
   getMe: async () => {
