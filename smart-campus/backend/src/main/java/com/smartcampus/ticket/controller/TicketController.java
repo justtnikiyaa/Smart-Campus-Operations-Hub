@@ -1,5 +1,6 @@
 package com.smartcampus.ticket.controller;
 
+import com.smartcampus.ticket.dto.TicketCommentResponse;
 import com.smartcampus.ticket.dto.TicketResponse;
 import com.smartcampus.ticket.entity.TicketStatus;
 import com.smartcampus.ticket.service.TicketService;
@@ -37,5 +38,16 @@ public class TicketController {
             @RequestParam TicketStatus status
     ) {
         return ResponseEntity.ok(ticketService.updateTicketStatus(id, status));
+    }
+
+    @PostMapping("/tickets/{id}/comments")
+    public ResponseEntity<TicketCommentResponse> addComment(
+            @PathVariable Long id,
+            @AuthenticationPrincipal OAuth2User principal,
+            @RequestParam @NotBlank String message
+    ) {
+        String commenterEmail = principal.getAttribute("email");
+        TicketCommentResponse response = ticketService.addComment(id, commenterEmail, message);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

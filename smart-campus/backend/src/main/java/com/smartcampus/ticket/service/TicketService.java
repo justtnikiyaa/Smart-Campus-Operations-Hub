@@ -2,9 +2,12 @@ package com.smartcampus.ticket.service;
 
 import com.smartcampus.common.exception.ResourceNotFoundException;
 import com.smartcampus.notification.service.NotificationService;
+import com.smartcampus.ticket.dto.TicketCommentResponse;
 import com.smartcampus.ticket.dto.TicketResponse;
 import com.smartcampus.ticket.entity.Ticket;
+import com.smartcampus.ticket.entity.TicketComment;
 import com.smartcampus.ticket.entity.TicketStatus;
+import com.smartcampus.ticket.repository.TicketCommentRepository;
 import com.smartcampus.ticket.repository.TicketRepository;
 import com.smartcampus.user.entity.User;
 import com.smartcampus.user.service.UserService;
@@ -19,6 +22,7 @@ import java.time.LocalDateTime;
 public class TicketService {
 
     private final TicketRepository ticketRepository;
+    private final TicketCommentRepository ticketCommentRepository;
     private final UserService userService;
     private final NotificationService notificationService;
 
@@ -56,6 +60,33 @@ public class TicketService {
         return toResponse(saved);
     }
 
+    @Transactional
+    public TicketCommentResponse addComment(Long ticketId, String commenterEmail, String message) {
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ticket not found."));
+
+        User commenter = userService.getByEmailOrThrow(commenterEmail);
+
+        TicketComment comment = new TicketComment();
+        comment.setTicket(ticket);
+        comment.setCommenter(commenter);
+        comment.setMessage(message);
+        comment.setCreatedAt(LocalDateTime.now());
+
+        TicketComment savedComment = ticketCommentRepository.save(comment);
+
+        // Notify owner only if someone else commented.
+        if (!savedComment.getCommenter().getId().equals(ticket.getOwner().getId())) {
+            notificationService.createNewCommentNotification(
+                    ticket.getOwner().getId(),
+                    ticket.getId(),
+                    savedComment.getId()
+            );
+        }
+
+        return toCommentResponse(savedComment);
+    }
+
     private TicketResponse toResponse(Ticket ticket) {
         return new TicketResponse(
                 ticket.getId(),
@@ -65,6 +96,16 @@ public class TicketService {
                 ticket.getOwner().getId(),
                 ticket.getCreatedAt(),
                 ticket.getUpdatedAt()
+        );
+    }
+
+    private TicketCommentResponse toCommentResponse(TicketComment comment) {
+        return new TicketCommentResponse(
+                comment.getId(),
+                comment.getTicket().getId(),
+                comment.getCommenter().getId(),
+                comment.getMessage(),
+                comment.getCreatedAt()
         );
     }
 }
