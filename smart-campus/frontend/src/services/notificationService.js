@@ -1,33 +1,19 @@
+import axios from "axios";
+
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8080`;
 
-async function request(path, options = {}) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {})
-    },
-    ...options
-  });
-
-  if (response.redirected || response.status === 401) {
-    throw new Error("Please sign in again.");
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json"
   }
+});
 
-  if (!response.ok) {
-    let message = "Request failed";
-    try {
-      const data = await response.json();
-      message = data?.message || data?.error || message;
-    } catch {
-      // ignore non-json error body
-    }
-    throw new Error(message);
-  }
-
-  if (response.status === 204) return null;
-  return response.json();
+function toFriendlyError(error) {
+  if (error?.response?.status === 401) return "Please sign in again.";
+  return error?.response?.data?.message || error?.message || "Request failed";
 }
 
 function formatRelativeTime(value) {
@@ -66,23 +52,39 @@ function toUiNotification(item) {
 
 const notificationService = {
   getMyNotifications: async () => {
-    const data = await request("/api/notifications/my", { method: "GET" });
-    return (data || []).map(toUiNotification);
+    try {
+      const { data } = await api.get("/api/notifications/my");
+      return (data || []).map(toUiNotification);
+    } catch (error) {
+      throw new Error(toFriendlyError(error));
+    }
   },
 
   getUnreadCount: async () => {
-    const data = await request("/api/notifications/my/unread-count", { method: "GET" });
-    return Number(data?.unreadCount || 0);
+    try {
+      const { data } = await api.get("/api/notifications/my/unread-count");
+      return Number(data?.unreadCount || 0);
+    } catch (error) {
+      throw new Error(toFriendlyError(error));
+    }
   },
 
   markRead: async (id) => {
-    const data = await request(`/api/notifications/${id}/read`, { method: "PATCH" });
-    return toUiNotification(data);
+    try {
+      const { data } = await api.patch(`/api/notifications/${id}/read`);
+      return toUiNotification(data);
+    } catch (error) {
+      throw new Error(toFriendlyError(error));
+    }
   },
 
   markAllRead: async () => {
-    await request("/api/notifications/my/read-all", { method: "PATCH" });
-    return { ok: true };
+    try {
+      await api.patch("/api/notifications/my/read-all");
+      return { ok: true };
+    } catch (error) {
+      throw new Error(toFriendlyError(error));
+    }
   }
 };
 
