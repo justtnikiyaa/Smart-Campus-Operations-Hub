@@ -1,4 +1,4 @@
-import { GraduationCap, ShieldCheck, Sparkles } from "lucide-react";
+import { GraduationCap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import useAuth from "../hooks/useAuth";
@@ -13,52 +13,34 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
-      <div className="grid min-h-screen grid-cols-1 lg:grid-cols-2">
-        <section className="relative hidden overflow-hidden bg-gradient-to-br from-blue-700 via-indigo-700 to-cyan-600 p-10 text-white lg:flex lg:flex-col lg:justify-between">
-          <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-white/10 blur-2xl" />
-          <div className="absolute -bottom-28 -right-20 h-80 w-80 rounded-full bg-cyan-300/20 blur-3xl" />
+    <div className="relative min-h-screen overflow-hidden text-white">
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/campus-bg.png')" }}
+      />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_68%_18%,rgba(147,51,234,0.28),transparent_34%),linear-gradient(120deg,rgba(7,18,42,0.78),rgba(12,20,42,0.35))]" />
+      <div className="absolute inset-0 backdrop-blur-[5px]" />
 
-          <div className="relative z-10 flex items-center gap-3">
-            <div className="rounded-xl bg-white/15 p-2 backdrop-blur">
-              <GraduationCap className="h-6 w-6" />
+      <div className="relative z-10 flex min-h-screen flex-col">
+        <header className="px-5 pt-5 sm:px-8 sm:pt-7">
+          <div className="inline-flex items-center gap-2.5 text-white/90">
+            <div className="rounded-lg border border-white/20 bg-white/10 p-1.5 backdrop-blur">
+              <GraduationCap className="h-4 w-4" />
             </div>
-            <span className="font-display text-lg font-semibold tracking-wide">Smart Campus Operations Hub</span>
+            <span className="font-display text-lg font-medium tracking-tight">Smart Campus Operations Hub</span>
           </div>
+        </header>
 
-          <div className="relative z-10 max-w-md">
-            <h1 className="font-display text-4xl font-bold leading-tight">Welcome back to your campus command center.</h1>
-            <p className="mt-4 text-sm text-blue-100">
-              Manage operations, notifications, and role-based workflows from one modern dashboard.
-            </p>
-
-            <div className="mt-8 grid gap-3 text-sm">
-              <div className="flex items-center gap-2 rounded-xl bg-white/10 p-3 backdrop-blur">
-                <ShieldCheck className="h-4 w-4" />
-                Secure role-based access
-              </div>
-              <div className="flex items-center gap-2 rounded-xl bg-white/10 p-3 backdrop-blur">
-                <Sparkles className="h-4 w-4" />
-                Smart notifications and alerts
-              </div>
-            </div>
-          </div>
-
-          <div className="relative z-10 text-xs text-blue-100/90">Designed for universities, built for speed.</div>
-        </section>
-
-        <section className="flex items-center justify-center p-4 sm:p-8">
-          <div className="w-full max-w-md rounded-2xl border border-white/40 bg-white/70 p-6 shadow-2xl backdrop-blur-xl sm:p-8">
-            <div className="mb-6">
-              <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">Smart Campus</p>
-              <h2 className="mt-2 font-display text-2xl font-bold text-slate-900">Sign in</h2>
-              <p className="mt-1 text-sm text-slate-600">Continue with your university Google account.</p>
-            </div>
+        <main className="flex flex-1 items-center justify-center px-4 py-8">
+          <div className="w-full max-w-[540px] rounded-[22px] border border-white/35 bg-white/[0.14] p-6 shadow-[0_24px_75px_-26px_rgba(7,12,28,0.9)] backdrop-blur-2xl sm:p-8">
+            <h1 className="mx-auto max-w-[360px] text-center font-display text-[2.65rem] font-medium leading-tight tracking-tight text-white/95 sm:text-[3rem]">
+              Welcome to the Command Center
+            </h1>
 
             <button
               type="button"
               onClick={loginWithGoogle}
-              className="group flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              className="mt-7 flex h-12 w-full items-center justify-center gap-3 rounded-xl border border-sky-100/60 bg-white/92 px-4 text-[1.02rem] font-semibold text-slate-700 shadow-[0_12px_26px_-20px_rgba(96,165,250,0.95)] transition hover:bg-white"
             >
               <svg viewBox="0 0 48 48" className="h-5 w-5" aria-hidden="true">
                 <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.6 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12S17.4 12 24 12c3 0 5.7 1.1 7.8 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z" />
@@ -69,15 +51,31 @@ export default function LoginPage() {
               Continue with Google
             </button>
 
-            <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-              <Button variant="secondary" onClick={() => loginAndGo("USER")}>Demo User</Button>
-              <Button variant="outline" onClick={() => loginAndGo("ADMIN")}>Demo Admin</Button>
-            </div>
+            <div className="mt-4 space-y-3">
+              <Button
+                variant="ghost"
+                className="h-11 w-full rounded-xl border border-white/55 bg-white/[0.03] text-[1.02rem] font-medium text-white hover:bg-white/12"
+                onClick={() => loginAndGo("USER")}
+              >
+                Demo User
+              </Button>
 
-            <p className="mt-5 text-center text-xs text-slate-500">By continuing, you agree to campus access policies.</p>
+              <Button
+                variant="ghost"
+                className="h-11 w-full rounded-xl border border-white/55 bg-white/[0.03] text-[1.02rem] font-medium text-white hover:bg-white/12"
+                onClick={() => loginAndGo("ADMIN")}
+              >
+                Demo Admin
+              </Button>
+            </div>
           </div>
-        </section>
+        </main>
+
+        <footer className="px-5 pb-6 text-sm text-white/80 sm:px-8 sm:pb-7">
+          Designed for universities, built for speed.
+        </footer>
       </div>
     </div>
   );
 }
+
