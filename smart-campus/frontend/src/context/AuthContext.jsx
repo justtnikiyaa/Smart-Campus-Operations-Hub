@@ -1,26 +1,74 @@
-import { createContext, useMemo, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
+import authService from "../services/authService";
 
 export const AuthContext = createContext(null);
 
-const seedUser = {
-  STUDENT: { name: "Nethmi Perera", email: "student@campus.edu", role: "STUDENT" },
-  ADMIN: { name: "Admin User", email: "admin@campus.edu", role: "ADMIN" }
-};
+function mapBackendUser(me) {
+  if (!me) return null;
+
+  const role = me.roles?.includes("ADMIN") ? "ADMIN" : "USER";
+  return {
+    id: me.id,
+    email: me.email,
+    fullName: me.fullName,
+    pictureUrl: me.pictureUrl,
+    role
+  };
+}
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [isSessionExpired, setIsSessionExpired] = useState(false);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
-  const loginWithRole = (role) => {
-    setUser(seedUser[role]);
-    setIsSessionExpired(false);
+  const refreshCurrentUser = async () => {
+    const me = await authService.getMe();
+
+    if (!me) {
+      setUser(null);
+      return null;
+    }
+
+    const normalized = mapBackendUser(me);
+    setUser(normalized);
+    return normalized;
   };
 
-  const logout = () => setUser(null);
+  useEffect(() => {
+    let active = true;
 
-  const expireSession = () => {
-    setUser(null);
-    setIsSessionExpired(true);
+    async function bootstrap() {
+      try {
+        const current = await authService.getMe();
+        if (!active) return;
+        setUser(mapBackendUser(current));
+      } catch {
+        if (active) setUser(null);
+      } finally {
+        if (active) setIsAuthLoading(false);
+      }
+    }
+
+    bootstrap();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const loginWithGoogle = () => authService.loginWithGoogle();
+
+  const finalizeOAuthLogin = async () => {
+    const current = await refreshCurrentUser();
+    setIsAuthLoading(false);
+    return current;
+  };
+
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } finally {
+      setUser(null);
+      setIsAuthLoading(false);
+    }
   };
 
   const value = useMemo(
@@ -28,12 +76,13 @@ export function AuthProvider({ children }) {
       user,
       role: user?.role || null,
       isAuthenticated: Boolean(user),
-      isSessionExpired,
-      loginWithRole,
-      logout,
-      expireSession
+      isAuthLoading,
+      loginWithGoogle,
+      finalizeOAuthLogin,
+      refreshCurrentUser,
+      logout
     }),
-    [user, isSessionExpired]
+    [user, isAuthLoading]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
