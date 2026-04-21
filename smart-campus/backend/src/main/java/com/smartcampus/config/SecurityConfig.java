@@ -43,6 +43,13 @@ public class SecurityConfig {
                         // Auth APIs: authenticated users
                         .requestMatchers("/api/auth/**").authenticated()
 
+                        // Module A APIs: Resource Management
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/resources/**").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/resources/**").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/resources/**").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.PATCH, "/api/resources/**").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/resources/**").hasAnyRole("USER", "ADMIN")
+
                         // Additional protected APIs in this project
                         .requestMatchers("/api/notification-preferences/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/api/bookings/**").hasAnyRole("USER", "ADMIN")
