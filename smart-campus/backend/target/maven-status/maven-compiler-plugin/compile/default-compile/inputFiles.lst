@@ -11,6 +11,7 @@ D:\Projects\GitHub\it3030-paf-2026-smart-campus-group11\smart-campus\backend\src
 D:\Projects\GitHub\it3030-paf-2026-smart-campus-group11\smart-campus\backend\src\main\java\com\smartcampus\common\exception\GlobalExceptionHandler.java
 D:\Projects\GitHub\it3030-paf-2026-smart-campus-group11\smart-campus\backend\src\main\java\com\smartcampus\common\exception\ResourceNotFoundException.java
 D:\Projects\GitHub\it3030-paf-2026-smart-campus-group11\smart-campus\backend\src\main\java\com\smartcampus\config\CorsConfig.java
+D:\Projects\GitHub\it3030-paf-2026-smart-campus-group11\smart-campus\backend\src\main\java\com\smartcampus\config\DataSeeder.java
 D:\Projects\GitHub\it3030-paf-2026-smart-campus-group11\smart-campus\backend\src\main\java\com\smartcampus\config\SecurityConfig.java
 D:\Projects\GitHub\it3030-paf-2026-smart-campus-group11\smart-campus\backend\src\main\java\com\smartcampus\notification\controller\NotificationController.java
 D:\Projects\GitHub\it3030-paf-2026-smart-campus-group11\smart-campus\backend\src\main\java\com\smartcampus\notification\controller\NotificationPreferenceController.java
