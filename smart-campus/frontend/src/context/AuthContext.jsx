@@ -1,9 +1,89 @@
-import { createContext } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
+import authService from "../services/authService";
 
-const AuthContext = createContext({
-  user: null,
-  isAuthenticated: false,
-  roles: [],
-});
+export const AuthContext = createContext(null);
 
-export default AuthContext;
+function mapBackendUser(me) {
+  if (!me) return null;
+
+  const role = me.roles?.includes("ADMIN") ? "ADMIN" : "USER";
+  return {
+    id: me.id,
+    email: me.email,
+    fullName: me.fullName,
+    pictureUrl: me.pictureUrl,
+    role
+  };
+}
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
+
+  const refreshCurrentUser = async () => {
+    const me = await authService.getMe();
+
+    if (!me) {
+      setUser(null);
+      return null;
+    }
+
+    const normalized = mapBackendUser(me);
+    setUser(normalized);
+    return normalized;
+  };
+
+  useEffect(() => {
+    let active = true;
+
+    async function bootstrap() {
+      try {
+        const current = await authService.getMe();
+        if (!active) return;
+        setUser(mapBackendUser(current));
+      } catch {
+        if (active) setUser(null);
+      } finally {
+        if (active) setIsAuthLoading(false);
+      }
+    }
+
+    bootstrap();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const loginWithGoogle = () => authService.loginWithGoogle();
+
+  const finalizeOAuthLogin = async () => {
+    const current = await refreshCurrentUser();
+    setIsAuthLoading(false);
+    return current;
+  };
+
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } finally {
+      setUser(null);
+      setIsAuthLoading(false);
+    }
+  };
+
+  const value = useMemo(
+    () => ({
+      user,
+      role: user?.role || null,
+      isAuthenticated: Boolean(user),
+      isAuthLoading,
+      loginWithGoogle,
+      finalizeOAuthLogin,
+      refreshCurrentUser,
+      logout
+    }),
+    [user, isAuthLoading]
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}

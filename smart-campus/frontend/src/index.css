@@ -1,0 +1,75 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 218 40% 97%;
+  --foreground: 222 46% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 46% 11%;
+  --primary: 218 94% 54%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 215 32% 95%;
+  --secondary-foreground: 222 35% 16%;
+  --muted: 216 30% 93%;
+  --muted-foreground: 216 14% 45%;
+  --accent: 214 100% 96%;
+  --accent-foreground: 218 84% 38%;
+  --border: 216 24% 88%;
+  --ring: 212 95% 68%;
+  --success: 142 71% 45%;
+  --warning: 35 92% 50%;
+  --danger: 0 84% 60%;
+}
+
+.dark {
+  --background: 221 45% 8%;
+  --foreground: 210 40% 96%;
+  --card: 222 40% 12%;
+  --card-foreground: 210 40% 96%;
+  --primary: 214 94% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 221 30% 18%;
+  --secondary-foreground: 210 40% 95%;
+  --muted: 222 27% 18%;
+  --muted-foreground: 215 20% 72%;
+  --accent: 218 43% 20%;
+  --accent-foreground: 213 94% 82%;
+  --border: 220 25% 24%;
+  --ring: 199 89% 66%;
+}
+
+* {
+  @apply border-border;
+}
+
+html {
+  font-size: 14.5px;
+}
+
+@media (min-width: 1280px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  @apply bg-background font-sans text-foreground antialiased;
+  font-feature-settings: "cv11", "ss01";
+  text-rendering: optimizeLegibility;
+  background-image: radial-gradient(circle at 14% 8%, rgba(59, 130, 246, 0.12), transparent 32%), radial-gradient(circle at 88% 92%, rgba(6, 182, 212, 0.11), transparent 28%);
+  background-attachment: fixed;
+}
+
+.dark body {
+  background-image: radial-gradient(circle at 16% 10%, rgba(37, 99, 235, 0.26), transparent 35%), radial-gradient(circle at 84% 88%, rgba(6, 182, 212, 0.18), transparent 30%);
+}
+
