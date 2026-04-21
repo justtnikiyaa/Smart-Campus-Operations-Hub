@@ -44,11 +44,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").authenticated()
 
                         // Module A APIs: Resource Management
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/resources/**").hasRole("ADMIN")
-                        .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/resources/**").hasRole("ADMIN")
-                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/resources/**").hasRole("ADMIN")
-                        .requestMatchers(org.springframework.http.HttpMethod.PATCH, "/api/resources/**").hasRole("ADMIN")
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/resources/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/resources/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/resources/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/resources/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.PATCH, "/api/resources/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/resources/**").permitAll()
 
                         // Additional protected APIs in this project
                         .requestMatchers("/api/notification-preferences/**").hasAnyRole("USER", "ADMIN")
