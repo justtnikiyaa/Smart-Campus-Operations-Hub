@@ -17,41 +17,22 @@ function mapBackendUser(me) {
 }
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [user, setUser] = useState({
+    id: 1,
+    email: "local@smartcampus.com",
+    fullName: "Local Admin",
+    pictureUrl: "",
+    role: "ADMIN"
+  });
+  const [isAuthLoading, setIsAuthLoading] = useState(false);
 
   const refreshCurrentUser = async () => {
-    const me = await authService.getMe();
-
-    if (!me) {
-      setUser(null);
-      return null;
-    }
-
-    const normalized = mapBackendUser(me);
-    setUser(normalized);
-    return normalized;
+    return user;
   };
 
   useEffect(() => {
-    let active = true;
-
-    async function bootstrap() {
-      try {
-        const current = await authService.getMe();
-        if (!active) return;
-        setUser(mapBackendUser(current));
-      } catch {
-        if (active) setUser(null);
-      } finally {
-        if (active) setIsAuthLoading(false);
-      }
-    }
-
-    bootstrap();
-    return () => {
-      active = false;
-    };
+    // Disabled authentication bootstrap for local UI testing
+    // bootstrap();
   }, []);
 
   const loginWithGoogle = () => authService.loginWithGoogle();
