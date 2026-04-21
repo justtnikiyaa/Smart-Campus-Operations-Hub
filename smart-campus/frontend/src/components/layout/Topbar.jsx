@@ -23,7 +23,7 @@ export default function Topbar({ onMenuClick, title, titleIcon: TitleIcon }) {
             <Menu className="h-4 w-4" />
           </Button>
 
-          <h1 className="truncate font-display text-[1.3rem] font-semibold tracking-tight text-slate-900 dark:text-slate-100 md:text-[1.55rem] flex items-center gap-2.5">
+          <h1 className="truncate font-display text-[1.3rem] font-semibold tracking-tight text-slate-900 dark:text-blue-50 md:text-[1.55rem] flex items-center gap-2.5 transition-all dark:drop-shadow-[0_0_12px_rgba(59,130,246,0.5)]">
             {TitleIcon && <TitleIcon className="w-5 h-5 text-blue-600 dark:text-cyan-400" />}
             {title}
           </h1>
