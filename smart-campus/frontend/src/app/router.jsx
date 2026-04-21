@@ -10,6 +10,12 @@ import RoleProtectedRoute from "../components/auth/RoleProtectedRoute";
 import PublicRoute from "../components/auth/PublicRoute";
 import HomeRedirect from "../components/auth/HomeRedirect";
 
+// Resource Pages
+import ResourcesPage from "../pages/resources/ResourcesPage";
+import ResourceDetailPage from "../pages/resources/ResourceDetailPage";
+import ResourceCreatePage from "../pages/resources/ResourceCreatePage";
+import ResourceEditPage from "../pages/resources/ResourceEditPage";
+
 export const router = createBrowserRouter([
   {
     path: "/login",
@@ -54,6 +60,40 @@ export const router = createBrowserRouter([
     element: (
       <RoleProtectedRoute allowRoles={["ADMIN"]}>
         <NotificationsPage />
+      </RoleProtectedRoute>
+    )
+  },
+
+  // Resource Routes (Module A)
+  {
+    path: "/resources",
+    element: (
+      <RoleProtectedRoute allowRoles={["USER", "ADMIN"]}>
+        <ResourcesPage />
+      </RoleProtectedRoute>
+    )
+  },
+  {
+    path: "/resources/:id",
+    element: (
+      <RoleProtectedRoute allowRoles={["USER", "ADMIN"]}>
+        <ResourceDetailPage />
+      </RoleProtectedRoute>
+    )
+  },
+  {
+    path: "/admin/resources/new",
+    element: (
+      <RoleProtectedRoute allowRoles={["ADMIN"]}>
+        <ResourceCreatePage />
+      </RoleProtectedRoute>
+    )
+  },
+  {
+    path: "/admin/resources/:id/edit",
+    element: (
+      <RoleProtectedRoute allowRoles={["ADMIN"]}>
+        <ResourceEditPage />
       </RoleProtectedRoute>
     )
   },
