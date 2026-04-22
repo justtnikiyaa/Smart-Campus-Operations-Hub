@@ -125,6 +125,26 @@ public class NotificationService {
         return toResponse(notificationRepository.save(notification));
     }
 
+    @Transactional
+    public void createBroadcastNotification(com.smartcampus.notification.dto.CreateBroadcastRequest request, String adminEmail) {
+        User createdBy = userService.getByEmailOrThrow(adminEmail);
+        List<User> allUsers = userRepository.findAll();
+        
+        List<Notification> notifications = allUsers.stream().map(recipient -> {
+            Notification notification = new Notification();
+            notification.setTitle(request.title());
+            notification.setMessage(request.message());
+            notification.setType(NotificationType.CAMPUS_ALERT);
+            notification.setRecipient(recipient);
+            notification.setCreatedBy(createdBy);
+            notification.setRead(false);
+            notification.setCreatedAt(LocalDateTime.now());
+            return notification;
+        }).toList();
+        
+        notificationRepository.saveAll(notifications);
+    }
+
     public List<NotificationResponse> getAllNotifications() {
         return notificationRepository.findAll().stream().map(this::toResponse).toList();
     }
@@ -160,6 +180,7 @@ public class NotificationService {
             case BOOKING_APPROVED, BOOKING_REJECTED -> preference.isBookingNotificationsEnabled();
             case TICKET_STATUS_CHANGED -> preference.isTicketNotificationsEnabled();
             case NEW_COMMENT -> preference.isCommentNotificationsEnabled();
+            case CAMPUS_ALERT -> true;
         };
     }
 

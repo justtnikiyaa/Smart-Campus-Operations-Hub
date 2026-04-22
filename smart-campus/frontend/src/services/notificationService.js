@@ -93,6 +93,15 @@ const notificationService = {
     } catch (error) {
       throw new Error(toFriendlyError(error));
     }
+  },
+
+  sendBroadcast: async (title, message) => {
+    try {
+      await api.post("/api/notifications/broadcast", { title, message });
+      return { ok: true };
+    } catch (error) {
+      throw new Error(toFriendlyError(error));
+    }
   }
 };
 

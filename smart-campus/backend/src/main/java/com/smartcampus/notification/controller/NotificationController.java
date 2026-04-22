@@ -1,5 +1,6 @@
 package com.smartcampus.notification.controller;
 
+import com.smartcampus.notification.dto.CreateBroadcastRequest;
 import com.smartcampus.notification.dto.CreateNotificationRequest;
 import com.smartcampus.notification.dto.NotificationResponse;
 import com.smartcampus.notification.dto.UnreadCountResponse;
@@ -75,6 +76,16 @@ public class NotificationController {
         String adminEmail = principal.getAttribute("email");
         NotificationResponse response = notificationService.createNotification(request, adminEmail);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/broadcast")
+    public ResponseEntity<Void> broadcastNotification(
+            @Valid @RequestBody CreateBroadcastRequest request,
+            @AuthenticationPrincipal OAuth2User principal
+    ) {
+        String adminEmail = principal.getAttribute("email");
+        notificationService.createBroadcastNotification(request, adminEmail);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping

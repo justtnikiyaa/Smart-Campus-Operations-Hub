@@ -49,6 +49,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/notifications").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/notifications/*").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/notifications").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/notifications/broadcast").hasRole("ADMIN")
 
                         // Auth APIs: authenticated users
                         .requestMatchers("/api/auth/**").authenticated()

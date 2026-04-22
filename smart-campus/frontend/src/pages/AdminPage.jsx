@@ -1,9 +1,35 @@
+import React, { useState } from 'react';
 import AppLayout from "../components/layout/AppLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Button } from "../components/ui/button";
-import { BellRing, ShieldCheck, Users2 } from "lucide-react";
+import { BellRing, ShieldCheck, Users2, X } from "lucide-react";
+import notificationService from "../services/notificationService";
 
 export default function AdminPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [title, setTitle] = useState('');
+  const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState(null);
+
+  const handleSendAlert = async (e) => {
+    e.preventDefault();
+    if (!title.trim() || !message.trim()) return;
+    
+    setIsSubmitting(true);
+    setFeedback(null);
+    try {
+      await notificationService.sendBroadcast(title, message);
+      setFeedback({ type: 'success', text: 'Campus alert broadcasted successfully!' });
+      setTitle('');
+      setMessage('');
+      setTimeout(() => setIsModalOpen(false), 2000);
+    } catch (error) {
+      setFeedback({ type: 'error', text: error.message || 'Failed to send alert.' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   return (
     <AppLayout title="Admin">
       <div className="space-y-4">
@@ -41,10 +67,60 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <Button>Send Campus Alert</Button>
+            <Button onClick={() => setIsModalOpen(true)}>Send Campus Alert</Button>
           </CardContent>
         </Card>
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg dark:bg-[#0d1628] dark:border dark:border-cyan-300/20">
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-lg font-semibold dark:text-white">Send Campus Alert</h3>
+              <button onClick={() => setIsModalOpen(false)} className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            
+            {feedback && (
+              <div className={`mb-4 rounded p-3 text-sm ${feedback.type === 'success' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'}`}>
+                {feedback.text}
+              </div>
+            )}
+
+            <form onSubmit={handleSendAlert} className="space-y-4">
+              <div>
+                <label className="mb-1 block text-sm font-medium dark:text-slate-200">Alert Title</label>
+                <input 
+                  type="text" 
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="e.g., Campus Closure"
+                  className="w-full rounded-md border border-slate-300 p-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  required
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium dark:text-slate-200">Message</label>
+                <textarea 
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Type your alert message here..."
+                  rows={4}
+                  className="w-full rounded-md border border-slate-300 p-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                  required
+                />
+              </div>
+              <div className="flex justify-end space-x-2 mt-6">
+                <Button type="button" variant="outline" className="border-slate-300 dark:border-slate-600 dark:bg-transparent dark:text-white" onClick={() => setIsModalOpen(false)}>Cancel</Button>
+                <Button type="submit" disabled={isSubmitting || !title.trim() || !message.trim()} className="bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+                  {isSubmitting ? 'Sending...' : 'Send Alert'}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </AppLayout>
   );
 }
