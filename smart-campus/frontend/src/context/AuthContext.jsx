@@ -1,4 +1,4 @@
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import authService from "../services/authService";
 
 export const AuthContext = createContext(null);
@@ -6,21 +6,36 @@ export const AuthContext = createContext(null);
 function mapBackendUser(me) {
   if (!me) return null;
 
-  const role = me.roles?.includes("ADMIN") ? "ADMIN" : "USER";
+  let role = "USER";
+  if (me.roles?.includes("ADMIN")) role = "ADMIN";
+  else if (me.roles?.includes("TECHNICIAN")) role = "TECHNICIAN";
+
   return {
     id: me.id,
     email: me.email,
     fullName: me.fullName,
     pictureUrl: me.pictureUrl,
+    roles: me.roles ?? [],
     role
   };
 }
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
-  const refreshCurrentUser = async () => {
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState({
+    id: 1,
+    email: "local@smartcampus.com",
+    fullName: "Local Admin",
+    pictureUrl: "",
+    role: "ADMIN"
+  });
+  const [isAuthLoading, setIsAuthLoading] = useState(false);
+
+<<<<<<< HEAD
+  const refreshCurrentUser = useCallback(async () => {
     const me = await authService.getMe();
 
     if (!me) {
@@ -31,45 +46,51 @@ export function AuthProvider({ children }) {
     const normalized = mapBackendUser(me);
     setUser(normalized);
     return normalized;
+  }, []);
+=======
+  const refreshCurrentUser = async () => {
+    return user;
   };
+>>>>>>> c556bddf476b891641516163429273e75f6a332d
 
   useEffect(() => {
-    let active = true;
-
-    async function bootstrap() {
-      try {
-        const current = await authService.getMe();
-        if (!active) return;
-        setUser(mapBackendUser(current));
-      } catch {
-        if (active) setUser(null);
-      } finally {
-        if (active) setIsAuthLoading(false);
-      }
-    }
-
-    bootstrap();
-    return () => {
-      active = false;
-    };
+    // Disabled authentication bootstrap for local UI testing
+    // bootstrap();
   }, []);
 
-  const loginWithGoogle = () => authService.loginWithGoogle();
+  const loginWithGoogle = useCallback(() => {
+    authService.loginWithGoogle();
+  }, []);
 
-  const finalizeOAuthLogin = async () => {
-    const current = await refreshCurrentUser();
+  const finalizeOAuthLogin = useCallback(async () => {
+    setIsAuthLoading(true);
+
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      try {
+        const current = await refreshCurrentUser();
+        if (current) {
+          setIsAuthLoading(false);
+          return current;
+        }
+      } catch {
+        // Retry a few times to handle session propagation timing.
+      }
+
+      await sleep(350);
+    }
+
     setIsAuthLoading(false);
-    return current;
-  };
+    return null;
+  }, [refreshCurrentUser]);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await authService.logout();
     } finally {
       setUser(null);
       setIsAuthLoading(false);
     }
-  };
+  }, []);
 
   const value = useMemo(
     () => ({
@@ -82,7 +103,14 @@ export function AuthProvider({ children }) {
       refreshCurrentUser,
       logout
     }),
-    [user, isAuthLoading]
+    [
+      user,
+      isAuthLoading,
+      loginWithGoogle,
+      finalizeOAuthLogin,
+      refreshCurrentUser,
+      logout
+    ]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
