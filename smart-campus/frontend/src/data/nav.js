@@ -4,6 +4,7 @@ import {
   ShieldCheck,
   Settings,
   UserCircle,
+  Package,
   Ticket,
   Calendar
 } from "lucide-react";
@@ -11,17 +12,17 @@ import {
 export const navByRole = {
   USER: [
     { label: "Dashboard", to: "/dashboard", icon: LayoutDashboard },
+    { label: "Resources", to: "/resources", icon: Package },
     { label: "Tickets", to: "/tickets", icon: Ticket },
     { label: "Bookings", to: "/bookings", icon: Calendar },
     { label: "Notifications", to: "/notifications", icon: Bell },
-    { label: "Settings", to: "/settings/notifications", icon: Settings },
     { label: "Profile", to: "/dashboard", icon: UserCircle }
   ],
   ADMIN: [
     { label: "Dashboard", to: "/admin", icon: LayoutDashboard },
+    { label: "Resources", to: "/resources", icon: Package },
     { label: "Tickets", to: "/tickets", icon: Ticket },
     { label: "Manage Bookings", to: "/admin/bookings", icon: ShieldCheck },
-    { label: "Admin", to: "/admin", icon: ShieldCheck },
     { label: "Notifications", to: "/admin/notifications", icon: Bell },
     { label: "Settings", to: "/settings/notifications", icon: Settings }
   ],
