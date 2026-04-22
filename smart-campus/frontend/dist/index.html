@@ -4,10 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Smart Campus Operations Hub</title>
-    <script type="module" crossorigin src="/assets/index-sVkjRGla.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BIEPe2mW.css">
+    <script type="module" crossorigin src="/assets/index-mGI1oBe8.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BmzfiVQj.css">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
+    <script>
+      window.addEventListener('error', function(event) {
+        document.body.innerHTML += '<div style="position:fixed;top:0;left:0;background:red;color:white;z-index:9999;padding:20px;font-family:monospace;width:100%;">' + event.message + '<br/><br/>' + event.filename + ':' + event.lineno + '<br/><pre>' + (event.error && event.error.stack ? event.error.stack : '') + '</pre></div>';
+      });
+      window.addEventListener('unhandledrejection', function(event) {
+        document.body.innerHTML += '<div style="position:fixed;top:0;left:0;background:orange;color:black;z-index:9999;padding:20px;font-family:monospace;width:100%;">Unhandled Promise Rejection: ' + (event.reason ? (event.reason.message || event.reason) : 'Unknown') + '<br/><pre>' + (event.reason && event.reason.stack ? event.reason.stack : '') + '</pre></div>';
+      });
+    </script>
   </body>
 </html>
