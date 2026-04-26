@@ -5,7 +5,7 @@ import { Button } from "../components/ui/button";
 import { BellRing, ShieldCheck, Users2, X, Wrench, Loader2, UserCog } from "lucide-react";
 import notificationService from "../services/notificationService";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8081";
 
 export default function AdminPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
