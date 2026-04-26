@@ -54,7 +54,7 @@ The backend is developed using Java and Spring Boot, offering a robust and scala
 A relational database is used to ensure data integrity and manage complex relationships between Users, Bookings, Tickets, Comments, and Notifications.
 
 ### 4.4 Authentication Flow (OAuth)
-The system utilizes Google OAuth 2.0 for user authentication. When a user logs in, the frontend requests a token from Google. This token is validated by the backend, which then issues a secure internal JWT (JSON Web Token) to maintain the user's session and role information across subsequent API calls.
+The system utilizes Google OAuth 2.0 for user authentication. When a user logs in, the backend authenticates the user via Google and maintains the session state using Spring Security Session Cookies (`JSESSIONID`). This cookie is used to securely track the user's authenticated session and role information across subsequent API calls, without exposing sensitive credentials.
 
 ## 5. API Design Overview
 The system exposes a set of RESTful APIs to facilitate communication between the frontend and backend.
@@ -86,5 +86,13 @@ I developed the core notification system to keep users engaged and informed. Thi
 * Implementing REST API endpoints for the frontend to retrieve unread notifications.
 * Validating the accurate delivery of notifications across different user roles to ensure they receive timely and relevant updates regarding their campus activities.
 
-## 8. Conclusion
+### 7.4 Testing & API Evidence
+I created a comprehensive `.http` test suite (`api-tests.http`) that allows automated execution of all critical API endpoints directly within the IDE. This suite handles the OAuth `JSESSIONID` integration and demonstrates successful execution of key workflows (OAuth authentication, RBAC authorization, Ticket creation, Booking flows, and Notification retrieval).
+
+## 8. Running System & Evidence
+As per the assignment requirements:
+* **Running System:** The project is fully demonstrable locally. Both the Vite frontend (port 5173) and the Spring Boot backend (port 8081) have been configured to run seamlessly on the local environment.
+* **Evidence:** Screenshots demonstrating the successful execution of the aforementioned API workflows, as well as the OAuth login process, are attached as evidence alongside this report.
+
+## 9. Conclusion
 The Smart Campus Operations Hub successfully demonstrates a functional, integrated solution for managing university facilities and operations. Through effective teamwork, we developed a system that covers booking, ticketing, communication, and security. The modular architecture ensures that the system is scalable and can be expanded in the future, providing a solid foundation for a truly "smart" campus environment.
